@@ -1,0 +1,2 @@
+this is a library to access the slow control data
+look at getP8Sensor.cc for an example of how to use it
