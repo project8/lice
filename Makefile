@@ -10,9 +10,6 @@ endif
 ifeq ($(OS),FreeBSD)
 	CXXFLAGS := $(CXXFLAGS) -DNO_MEMSTREAM
 endif
-ifeq ($(OS),SunOS)
-	CXXFLAGS := $(CXXFLAGS) -DNO_MEMSTREAM
-endif
 
 .PHONY: all
 all: lice.a $(TARGETS)
@@ -20,7 +17,7 @@ all: lice.a $(TARGETS)
 $(TARGETS) : % : %.cc lice.a
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LINKEDLIBS)
 
-lice.a : Lice.o JSON.o CouchDBInterface.o
+lice.a : Lice.o JSON.o CouchDBInterface.o MemstreamInterface.o
 	ar -rcs lice.a $?
 
 clean:

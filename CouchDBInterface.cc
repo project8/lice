@@ -1,4 +1,9 @@
 #include "CouchDBInterface.hh"
+
+#ifdef NO_MEMSTREAM
+#include "MemstreamInterface.hh"
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <sstream>
@@ -38,11 +43,7 @@ bool CouchDBInterface::sendDocument(const JSONObject &object) {
 	//here is space to store the response from the db
 	char *response=NULL;
 	size_t response_size=0;
-#ifndef NO_MEMSTREAM
     FILE *responseptr=open_memstream(&response,&response_size);
-#else /* !HAVE_MEMSTREAM */
-    FILE *responseptr=tmpfile();
-#endif /* !HAVE_MEMSTREAM */
 	//here is space to put curl error messages in
 	char *errbuf=new char[CURL_ERROR_SIZE];
 	//set up the curl options
@@ -57,13 +58,7 @@ bool CouchDBInterface::sendDocument(const JSONObject &object) {
 	//perform the operation
 	CURLcode result=curl_easy_perform(handle);
 	//cleanup
-#ifndef NO_MEMSTREAM
     fclose(responseptr); //this has to be done to access the buffer
-#else /* !HAVE_MEMSTREAM */
-    response = (char*)malloc(BUFSIZ*sizeof(char));
-    response_size = fread(response, sizeof(char), BUFSIZ, responseptr);
-    fclose(responseptr);
-#endif /* !HAVE_MEMSTREAM */
 	curl_slist_free_all(slist);
 	//check for curl error
 	bool couchok=false;
@@ -83,11 +78,7 @@ bool CouchDBInterface::sendDocument(const JSONObject &object) {
 JSONObject CouchDBInterface::getView(string getstring,string postoptions) {
 	char *response=NULL;
 	size_t response_size=0;
-#ifndef NO_MEMSTREAM
 	FILE *responseptr=open_memstream(&response,&response_size);
-#else /* !HAVE_MEMSTREAM */
-	FILE *responseptr=tmpfile();
-#endif /* !HAVE_MEMSTREAM */
 	string url="http://"+server+":"+port+"/"+databasename+"/"+getstring+postoptions;
 //	cerr << "url is " << url << endl;
 	curl_easy_setopt(handle,CURLOPT_URL,url.c_str());
@@ -96,13 +87,7 @@ JSONObject CouchDBInterface::getView(string getstring,string postoptions) {
 
 	curl_easy_setopt(handle,CURLOPT_WRITEDATA,responseptr);
 	CURLcode result=curl_easy_perform(handle);
-#ifndef NO_MEMSTREAM
 	fclose(responseptr); //this has to be done to access the buffer
-#else /* !HAVE_MEMSTREAM */
-	response = (char*)malloc(BUFSIZ*sizeof(char));
-	response_size = fread(response, sizeof(char), BUFSIZ, responseptr);
-	fclose(responseptr);
-#endif /* !HAVE_MEMSTREAM */
 	JSONObject ret;
 	if(result!=CURLE_OK) {
 		last_curl_error=string(errbuf);
