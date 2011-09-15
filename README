@@ -3,5 +3,4 @@ look at getP8Sensor.cc for an example of how to use it
 
 note, requires libcurl to compile
 
-also, memstream in CouchDBInterface may not work on OSX.  I suggest someone with a mac look up how to fix this, and do so in a way where it can work for everyone
- 
+open_memstream has been implemented for OS's that don't include that function in their stdio.h, but that do have funopen.  This includes MacOS and FreeBSD, though others could be added if applicable. 
