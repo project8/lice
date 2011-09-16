@@ -12,15 +12,15 @@ ifeq ($(OS),FreeBSD)
 endif
 
 .PHONY: all
-all: lice.a $(TARGETS)
+all: liblice.a $(TARGETS)
 
-$(TARGETS) : % : %.cc lice.a
+$(TARGETS) : % : %.cc liblice.a
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LINKEDLIBS)
 
-lice.a : Lice.o JSON.o CouchDBInterface.o MemstreamInterface.o
-	ar -rcs lice.a $?
+liblice.a : Lice.o JSON.o CouchDBInterface.o MemstreamInterface.o
+	ar -rcs liblice.a $?
 
 clean:
-	rm -f lice.a
+	rm -f liblice.a
 	rm -f $(TARGETS)
 	rm -f *.o
