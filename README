@@ -1,6 +1,8 @@
 this is a library to access the slow control data
 look at getP8Sensor.cc for an example of how to use it
 
+this package can be built with the home-made Makefile or using CMake
+
 note, requires libcurl to compile
 
-open_memstream has been implemented for OS's that don't include that function in their stdio.h, but that do have funopen.  This includes MacOS and FreeBSD, though others could be added if applicable. 
+open_memstream has been implemented for OS's that don't include that function in their stdio.h, but that do have funopen. 
