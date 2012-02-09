@@ -331,6 +331,7 @@ void JSONValue::delete_data() {
 			return;
 		case OBJECT:
 			delete ((JSONObject*)data);
+			return;
 		case JSONNULL:
 			return;
 	}
